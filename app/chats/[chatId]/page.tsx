@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export default function ChatSection(){
     return (
-    <main className="flex flex-col container h-[100dvh] pb-4 gap-y-4">
+    <main className="flex flex-col md:container md:px-0 px-2 h-[100dvh] pb-4 gap-y-4">
         <div className="flex flex-col">
             <div className="bg-background border-b h-14 flex items-center">
             <div className="flex items-center gap-4">

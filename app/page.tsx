@@ -6,9 +6,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Home() {
   return (
-    <main className="flex flex-col h-[100dvh]">
+    <main className="flex flex-col h-[100dvh] md:container ">
     <Navbar/>
-    <ScrollArea className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-4 grow">
+    <ScrollArea className=" grow">
         <Searchbar/>
         <div className="space-y-4">
           <MessageList/>

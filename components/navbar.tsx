@@ -4,7 +4,7 @@ export default function Navbar(){
     return (
         <header className="px-4 lg:px-6 h-14 flex items-center py-2 bg-card">
         <Sheet>
-          <SheetTrigger asChild className="block sm:hidden">
+          <SheetTrigger asChild className="block sm:hidden mr-4">
             <Button size="icon" variant="outline" className="lg:hidden">
               <MenuIcon className="h-6 w-6" />
               <span className="sr-only">Toggle navigation menu</span>
