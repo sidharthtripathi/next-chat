@@ -10,8 +10,8 @@ export default function Navbar(){
               <span className="sr-only">Toggle navigation menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="sm:max-w-xs">
-            <nav className="grid gap-6 text-lg font-medium">
+          <SheetContent side="left" className="sm:max-w-xs" >
+            <nav className="flex flex-col text-lg font-medium">
               <a
                 href="#"
                 className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
@@ -22,19 +22,19 @@ export default function Navbar(){
               </a>
               <a
                 href="#"
-                className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                className="px-2.5 text-muted-foreground hover:text-foreground"
                 
               >
                 <div className="h-5 w-5" />
                 Dashboard
               </a>
-              <a href="#" className="flex items-center gap-4 px-2.5 text-foreground" >
+              <a href="#" className=" px-2.5 text-muted-foreground hover:text-foreground" >
                 <div className="h-5 w-5" />
                 Orders
               </a>
               <a
                 href="#"
-                className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                className=" px-2.5 text-muted-foreground hover:text-foreground"
                 
               >
                 <div className="h-5 w-5" />
@@ -42,7 +42,7 @@ export default function Navbar(){
               </a>
               <a
                 href="#"
-                className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                className=" px-2.5 text-muted-foreground hover:text-foreground"
                 
               >
                 <div className="h-5 w-5" />
@@ -50,7 +50,7 @@ export default function Navbar(){
               </a>
               <a
                 href="#"
-                className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                className=" px-2.5 text-muted-foreground hover:text-foreground"
                 
               >
                 <div className="h-5 w-5" />
