@@ -18,7 +18,9 @@ export async function POST(req : NextRequest){
          return NextResponse.json(
              await db.user.create({
                  data : {username,password}
-             })
+             }),{
+                status : 201
+             }
          )
      }
      else{

@@ -3,7 +3,7 @@ import { Inter as FontSans } from "next/font/google"
 
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
-
+import { Toaster } from "@/components/ui/toaster"
 import { cn } from "@/lib/utils"
  
 const fontSans = FontSans({
@@ -29,6 +29,7 @@ export default function RootLayout({
         )}>
           <ThemeProvider attribute="class" defaultTheme="dark">
             {children}
+            <Toaster/>
           </ThemeProvider>
 
           </body>
