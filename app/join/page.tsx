@@ -2,6 +2,8 @@
 import  React , {useState} from "react"
 import { useToast } from "@/components/ui/use-toast"
 import { Button } from "@/components/ui/button"
+import { useRouter } from 'next/navigation'
+
 import {
   Card,
   CardContent,
@@ -14,6 +16,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 export default function JoinPage() {
+  const router = useRouter()
   const { toast } = useToast()
   const [{username,password},setpayload] = useState({username: "",password: ""})
   const [loading,setLoading] = useState(false)
@@ -49,7 +52,7 @@ export default function JoinPage() {
           fetch('/api/join',{method : "POST",body : JSON.stringify({username,password})})
           .then((res)=>{
             if(res.status == 200){
-
+                router.push('/')
             }
             else if(res.status == 201 ){
               toast({
