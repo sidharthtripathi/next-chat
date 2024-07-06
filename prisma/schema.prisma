@@ -23,6 +23,7 @@ model User{
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
 
 }
 
@@ -32,7 +33,7 @@ model Conversation{
   users User[] @relation(fields: [userIds],references: [id])
   messages Message[]
 
-
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

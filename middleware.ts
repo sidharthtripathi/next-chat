@@ -1,7 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 import { jwtVerify } from "jose";
-import { createSecretKey } from "crypto";
 export async function middleware(req: NextRequest) {
   const token = cookies().get("token");
   const requestHeaders = new Headers(req.headers);
