@@ -5,11 +5,14 @@ interface Message {
   content: string;
   senderId: string;
   conversationId: string;
+  createdAt: string;
 }
 
 interface Conversation {
   id: string;
   username: string;
+  userId: string;
+  createdAt: string;
 }
 
 interface LastSync {
@@ -30,8 +33,8 @@ const db = new Dexie("MessageDatabase") as Dexie & {
 
 // Schema declaration:
 db.version(1).stores({
-  Messages: "id, content, senderId,conversationId", // primary key "id" (for the runtime!)
-  Conversations: "id,username",
+  Messages: "id, content, senderId,conversationId,createdAt", // primary key "id" (for the runtime!)
+  Conversations: "id,userId,username,createdAt",
   LastSync: "id,lastSync",
 });
 

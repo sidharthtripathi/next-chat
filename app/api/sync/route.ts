@@ -10,17 +10,30 @@ export async function GET(req: NextRequest) {
     where: { userIds: { has: userid }, createdAt: { gt: timeStamp } },
     select: {
       id: true,
-      users: { select: { username: true }, where: { NOT: { id: userid } } },
-      messages: {
-        where: { createdAt: { gt: timeStamp } },
-        select: {
-          id: true,
-          senderId: true,
-          content: true,
-          conversationId: true,
-        },
+      createdAt: true,
+      users: {
+        select: { username: true, id: true },
+        where: { NOT: { id: userid } },
       },
     },
   });
-  return NextResponse.json(convos);
+  const allConvos = await db.conversation.findMany({
+    where: { userIds: { has: userid } },
+    select: { id: true },
+  });
+  const messages = await db.message.findMany({
+    where: {
+      conversationId: { in: allConvos.map((convo) => convo.id) },
+      createdAt: { gt: timeStamp },
+    },
+    select: {
+      content: true,
+      senderId: true,
+      conversationId: true,
+      createdAt: true,
+      id: true,
+    },
+  });
+
+  return NextResponse.json({ convos, messages });
 }

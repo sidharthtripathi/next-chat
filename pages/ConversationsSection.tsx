@@ -9,7 +9,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 
 export default function Conversations() {
   const conversations = useLiveQuery(() => {
-    return db.Conversations.toArray();
+    return db.Conversations.orderBy("createdAt").toArray();
   }, []);
   return (
     <main className="container">
@@ -21,6 +21,7 @@ export default function Conversations() {
             username={convo.username}
             convoId={convo.id}
             key={convo.id}
+            userId={convo.userId}
           />
         ))}
       </ScrollArea>

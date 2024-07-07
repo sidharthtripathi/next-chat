@@ -21,7 +21,7 @@ export default function ChatApp() {
       }
     }
     run();
-  }, []);
+  });
   if (!dbSync) return <div>Loading...</div>;
   else {
     return convo ? <ChatSection /> : <Conversations />;

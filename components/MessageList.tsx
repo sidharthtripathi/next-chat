@@ -6,16 +6,18 @@ export default function MessageList({
   username,
   lastMessage,
   convoId,
+  userId,
 }: {
   username: string;
   lastMessage?: string;
   convoId: string;
+  userId: string;
 }) {
   const setConvoState = useSetRecoilState(convoState);
   return (
     <div
       onClick={() => {
-        setConvoState({ id: convoId, username });
+        setConvoState({ id: convoId, username, userId });
       }}
       className="flex items-center gap-4 p-4 rounded-lg bg-background hover:bg-muted transition-colors"
     >

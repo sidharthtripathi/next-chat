@@ -5,28 +5,35 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { db, Message } from "@/lib/dexdb";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useEffect, useRef, useState } from "react";
+import { db } from "@/lib/dexdb";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { convoState } from "@/state/ConvoState";
+import { generateRandomHexString } from "@/lib/utils";
+import { wsState } from "@/state/wsState";
 import { useLiveQuery } from "dexie-react-hooks";
 
 export default function ChatSection() {
   const [convo, setConvo] = useRecoilState(convoState);
   const [userId, setUserId] = useState<string | null>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const messages = useLiveQuery(() => {
     return db.Messages.where("conversationId")
       .equals(convo?.id as string)
-      .toArray();
+      .sortBy("createdAt");
   }, []);
   useEffect(() => {
     setUserId(localStorage.getItem("id"));
   }, []);
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollIntoView(false);
+    }
+  }, [messages]);
+
   return (
-    <main className="flex flex-col md:container md:px-0 px-2 h-[100dvh] pb-4 gap-y-4">
-      <div className="flex flex-col">
+    <main className="flex flex-col md:container md:px-0 h-[100dvh]  pb-4 gap-y-4 container">
+      <div className="flex flex-col px-4">
         <div className="bg-background border-b h-14 flex items-center">
           <div className="flex items-center gap-4">
             <ArrowLeftIcon
@@ -48,19 +55,22 @@ export default function ChatSection() {
         </div>
       </div>
       <ScrollArea className="grow px-4">
-        {messages?.map((message) => {
-          if (message.senderId === userId)
-            return <SentMessage content={message.content} key={message.id} />;
-          else
-            return (
-              <ReceivedMessage key={message.id} content={message.content} />
-            );
-        })}
+        <div ref={chatContainerRef}>
+          {messages?.map((message) => {
+            if (message.senderId === userId)
+              return <SentMessage content={message.content} key={message.id} />;
+            else
+              return (
+                <ReceivedMessage key={message.id} content={message.content} />
+              );
+          })}
+        </div>
       </ScrollArea>
-      <section className="flex gap-2">
-        <Input type="text" placeholder="Enter you message" />
-        <Button>Send</Button>
-      </section>
+      <MessageForm
+        userId={convo?.userId as string}
+        senderId={userId as string}
+        convoId={convo?.id as string}
+      />
     </main>
   );
 }
@@ -85,22 +95,55 @@ function ReceivedMessage({ content }: { content: string }) {
   );
 }
 
-// import { Button } from "@/components/ui/button";
-// import { db } from "@/lib/dexdb";
-// import { syncChats } from "@/lib/syncChats";
-// import { generateRandomHexString } from "@/lib/utils";
-// import { useParams } from "next/navigation";
+function MessageForm({
+  convoId,
+  senderId,
+  userId,
+}: {
+  senderId: string;
+  convoId: string;
+  userId: string;
+}) {
+  const [msg, setMsg] = useState("");
+  const socket = useRecoilValue(wsState);
+  return (
+    <section className="flex gap-2 px-4">
+      <Input
+        type="text"
+        placeholder="Enter you message"
+        value={msg}
+        onChange={(e) => {
+          setMsg(e.target.value);
+        }}
+      />
+      <Button
+        onClick={async () => {
+          const newmsg = {
+            content: msg,
+            id: generateRandomHexString(),
+            senderId: senderId,
+            conversationId: convoId,
+            createdAt: new Date().toISOString(),
+          };
+          setMsg("");
+          await db.Messages.add(newmsg);
+          await db.LastSync.update("syncId", { lastSync: newmsg.createdAt });
 
-// export default function Test() {
-//   const { chatId } = useParams();
-//   console.log(chatId);
-//   return (
-//     <Button
-//       onClick={() => {
-//         syncChats(chatId as string);
-//       }}
-//     >
-//       sync chats
-//     </Button>
-//   );
-// }
+          if (socket) {
+            socket.send(
+              JSON.stringify({
+                id: newmsg.id,
+                createdAt: newmsg.createdAt,
+                msg: newmsg.content,
+                to: userId,
+                conversationId: convoId,
+              })
+            );
+          }
+        }}
+      >
+        Send
+      </Button>
+    </section>
+  );
+}

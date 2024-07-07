@@ -1,5 +1,6 @@
 import { wsState } from "@/state/wsState";
 import { setRecoil } from "recoil-nexus";
+import { db } from "./dexdb";
 
 export function getSocket() {
   const isBrowser = typeof window !== "undefined";
@@ -14,6 +15,22 @@ export function getSocket() {
     socket.onclose = () => {
       handleDisconnect(socket);
     };
+    socket.onmessage = async (msg) => {
+      let newmsg = JSON.parse(msg.data) as {
+        msg: string;
+        from: string;
+        conversationId: string;
+        id: string;
+        createdAt: string;
+      };
+      await db.Messages.add({
+        content: newmsg.msg,
+        conversationId: newmsg.conversationId,
+        createdAt: newmsg.createdAt,
+        senderId: newmsg.from,
+        id: newmsg.id,
+      });
+    };
     return socket;
   }
 }
@@ -26,6 +43,9 @@ function handleDisconnect(socket: WebSocket) {
     setRecoil(wsState, socket);
     socket.onopen = () => {
       console.log("connected !!");
+    };
+    socket.onmessage = (msg) => {
+      console.log(msg.data);
     };
     socket.onerror = () => {
       console.log("errror while connecting !!");
