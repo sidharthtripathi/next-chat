@@ -9,35 +9,52 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { db, Message } from "@/lib/dexdb";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { convoState } from "@/state/ConvoState";
+import { useLiveQuery } from "dexie-react-hooks";
 
 export default function ChatSection() {
-  const { chatId } = useParams();
-  const [chats, setChats] = useState<Message[]>([]);
-  console.log(chatId);
-
+  const [convo, setConvo] = useRecoilState(convoState);
+  const [userId, setUserId] = useState<string | null>(null);
+  const messages = useLiveQuery(() => {
+    return db.Messages.where("conversationId")
+      .equals(convo?.id as string)
+      .toArray();
+  }, []);
+  useEffect(() => {
+    setUserId(localStorage.getItem("id"));
+  }, []);
   return (
     <main className="flex flex-col md:container md:px-0 px-2 h-[100dvh] pb-4 gap-y-4">
       <div className="flex flex-col">
         <div className="bg-background border-b h-14 flex items-center">
           <div className="flex items-center gap-4">
-            <Link href="/">
-              <ArrowLeftIcon className="hover:cursor-pointer w-4 h-4" />
-            </Link>
+            <ArrowLeftIcon
+              className="hover:cursor-pointer w-4 h-4"
+              onClick={() => {
+                setConvo(undefined);
+              }}
+            />
 
             <Avatar>
               <AvatarImage src="/placeholder-user.jpg" />
               <AvatarFallback>AC</AvatarFallback>
             </Avatar>
             <div>
-              <div className="font-medium">Acme Inc</div>
+              <div className="font-medium">{convo?.username}</div>
               <span className="text-muted-foreground text-xs">Typing...</span>
             </div>
           </div>
         </div>
       </div>
       <ScrollArea className="grow px-4">
-        {chats.map((chat) => {
-          return <SentMessage content={chat.content} key={chat.id as string} />;
+        {messages?.map((message) => {
+          if (message.senderId === userId)
+            return <SentMessage content={message.content} key={message.id} />;
+          else
+            return (
+              <ReceivedMessage key={message.id} content={message.content} />
+            );
         })}
       </ScrollArea>
       <section className="flex gap-2">
@@ -58,14 +75,11 @@ function SentMessage({ content }: { content: string }) {
   );
 }
 
-function ReceivedMessage() {
+function ReceivedMessage({ content }: { content: string }) {
   return (
     <div className="flex text-sm justify-start my-3">
       <span className="bg-primary-foreground text-primary p-2 rounded-md max-w-[90%]">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam quam
-        nam suscipit quisquam nulla, veniam repellat alias doloremque doloribus
-        porro earum iste placeat excepturi ea repellendus nostrum amet odit
-        dignissimos?
+        {content}
       </span>
     </div>
   );

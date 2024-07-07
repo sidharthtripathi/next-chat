@@ -1,18 +1,20 @@
 import Dexie, { type EntityTable } from "dexie";
 
 interface Message {
-  id: String;
+  id: string;
   content: string;
   senderId: string;
   conversationId: string;
-  createdAt: string;
 }
 
 interface Conversation {
   id: string;
   username: string;
-  lastMessage: string;
-  createdAt: string;
+}
+
+interface LastSync {
+  id: string;
+  lastSync: string;
 }
 
 const db = new Dexie("MessageDatabase") as Dexie & {
@@ -22,14 +24,17 @@ const db = new Dexie("MessageDatabase") as Dexie & {
   >;
 } & {
   Conversations: EntityTable<Conversation, "id">;
+} & {
+  LastSync: EntityTable<LastSync, "id">;
 };
 
 // Schema declaration:
 db.version(1).stores({
-  Messages: "id, content, senderId,conversationId,createdAt,updatedAt", // primary key "id" (for the runtime!)
-  Conversations: "id,createdAt,username,lastMessage",
+  Messages: "id, content, senderId,conversationId", // primary key "id" (for the runtime!)
+  Conversations: "id,username",
+  LastSync: "id,lastSync",
 });
 
-export type { Message, Conversation };
+export type { Message, Conversation, LastSync };
 
 export { db };
