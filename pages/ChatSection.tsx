@@ -37,7 +37,7 @@ export default function ChatSection() {
             />
 
             <Avatar>
-              <AvatarImage src="/placeholder-user.jpg" />
+              <AvatarImage src="/boy.png" />
               <AvatarFallback>AC</AvatarFallback>
             </Avatar>
             <div>

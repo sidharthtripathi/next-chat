@@ -154,7 +154,7 @@ function UserCard({
     >
       <Avatar>
         <AvatarFallback>CN</AvatarFallback>
-        <AvatarImage src={avatar ? avatar : "/placeholder.jpg"} />
+        <AvatarImage src={avatar ? avatar : "/boy.png"} />
       </Avatar>
       <span className="font-bold underline underline-offset-2 text-secondary-foreground">
         @{username}

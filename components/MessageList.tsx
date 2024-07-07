@@ -20,7 +20,7 @@ export default function MessageList({
       className="flex items-center gap-4 p-4 rounded-lg bg-background hover:bg-muted transition-colors"
     >
       <Avatar>
-        <AvatarImage src="/placeholder-user.jpg" />
+        <AvatarImage src="/boy.png" />
         <AvatarFallback>AC</AvatarFallback>
       </Avatar>
       <div className="flex-1">

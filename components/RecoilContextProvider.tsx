@@ -1,15 +1,17 @@
 "use client";
 
 import { RecoilRoot, atom } from "recoil";
-export const todoListState = atom({
-  key: "TodoList",
-  default: [],
-});
+import RecoilNexus from "recoil-nexus";
 
 export default function RecoidContextProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <RecoilRoot>{children}</RecoilRoot>;
+  return (
+    <RecoilRoot>
+      <RecoilNexus />
+      {children}
+    </RecoilRoot>
+  );
 }

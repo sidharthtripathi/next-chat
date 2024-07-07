@@ -2,7 +2,7 @@
 
 import { syncLocalDB } from "@/lib/syncLocalDB";
 import { dbSyncState } from "@/state/dbSyncState";
-import { userState } from "@/state/userState";
+
 import { useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import ChatSection from "./ChatSection";
@@ -12,6 +12,7 @@ import { convoState } from "@/state/ConvoState";
 export default function ChatApp() {
   const [dbSync, setDbSyncState] = useRecoilState(dbSyncState);
   const convo = useRecoilValue(convoState);
+
   useEffect(() => {
     async function run() {
       if (!dbSync) {
